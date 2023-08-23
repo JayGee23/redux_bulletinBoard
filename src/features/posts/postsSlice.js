@@ -1,9 +1,34 @@
 import { createSlice, nanoid } from "@reduxjs/toolkit";
+import { sub } from "date-fns";
 
 //initializing initial state for this "slice" of global state. Here hardcoding in two posts to start with.
 const initialState = [
-    {id: '1', title: 'Learning Redux Toolkit', content: "I've heard good things."},
-    {id: '2', title: 'Slices...', content: "Slice of state? How about a slice of pizza?...."}
+    {
+        id: '1', 
+        title: 'Learning Redux Toolkit', 
+        content: "I've heard good things.", 
+        date: sub(new Date(), {minutes: 10}).toISOString(),
+        reactions: {
+            thumbsUp: 0,
+            wow: 0,
+            heart: 0,
+            rocket: 0,
+            coffee: 0,
+        }
+    },
+    {
+        id: '2', 
+        title: 'Slices...', 
+        content: "Slice of state? How about a slice of pizza?....", 
+        date: sub(new Date(), {minutes: 5}).toISOString(),
+        reactions: {
+            thumbsUp: 0,
+            wow: 0,
+            heart: 0,
+            rocket: 0,
+            coffee: 0,
+        }
+    },
 ]
 
 
@@ -22,9 +47,24 @@ const postsSlice = createSlice({
                         id: nanoid(),
                         title,
                         content,
-                        userId
+                        date: new Date().toISOString(),
+                        userId,
+                        reactions: {
+                            thumbsUp: 0,
+                            wow: 0,
+                            heart: 0,
+                            rocket: 0,
+                            coffee: 0,
+                        }
                     }
                 }
+            }
+        },
+        reactionAdded(state, action) {
+            const {postId, reaction} = action.payload
+            const existingPost = state.find(post => post.id === postId)
+            if(existingPost) {
+                existingPost.reactions[reaction]++
             }
         }
     }
@@ -33,6 +73,6 @@ const postsSlice = createSlice({
 export const selectAllPosts = (state) => state.posts
 
 //exporting an action creator function. Automatically created when creating the reducer function above.
-export const {postAdded} = postsSlice.actions
+export const {postAdded, reactionAdded} = postsSlice.actions
 
 export default postsSlice.reducer
