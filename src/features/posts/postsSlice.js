@@ -96,7 +96,7 @@ const postsSlice = createSlice({
                 })
                 action.payload.id = sortedPosts[sortedPosts.length -1].id + 1
                 // end fix
-                
+
                 action.payload.userId = Number(action.payload.userId)
                 action.payload.date = new Date().toISOString()
                 action.payload.reactions = {
@@ -115,6 +115,10 @@ const postsSlice = createSlice({
 export const selectAllPosts = (state) => state.posts.posts
 export const getPostsStatus = (state) => state.posts.status
 export const getPostsError = (state) => state.posts.error
+
+export const selectPostById = (state, postId) => {
+   return state.posts.posts.find(post => post.id === postId)
+} 
 
 //exporting an action creator function. Automatically created when creating the reducer function above.
 export const { postAdded, reactionAdded } = postsSlice.actions
